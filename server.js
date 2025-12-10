@@ -49,6 +49,15 @@ if (isHttpsConfigured()) {
     
     httpsServer = https.createServer(httpsOptions, app);
     
+    // Register HTTPS server error handler
+    httpsServer.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`[HTTPS] Port ${HTTPS_PORT} is already in use`);
+      } else {
+        console.error('[HTTPS] Server error:', error.message);
+      }
+    });
+    
     httpsServer.listen(HTTPS_PORT, hostname, () => {
       console.log(`HTTPS Server running at https://${hostname}:${HTTPS_PORT}/`);
     });
@@ -105,21 +114,11 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 httpServer.on('error', (error) => {
   if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use`);
+    console.error(`[HTTP] Port ${PORT} is already in use`);
   } else {
-    console.error('HTTP server error:', error.message);
+    console.error('[HTTP] Server error:', error.message);
   }
   process.exit(1);
 });
-
-if (httpsServer) {
-  httpsServer.on('error', (error) => {
-    if (error.code === 'EADDRINUSE') {
-      console.error(`Port ${HTTPS_PORT} is already in use`);
-    } else {
-      console.error('HTTPS server error:', error.message);
-    }
-  });
-}
 
 module.exports = { httpServer, httpsServer };
