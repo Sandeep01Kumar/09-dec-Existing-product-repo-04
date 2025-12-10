@@ -47,31 +47,47 @@ router.get('/health', (req, res) => {
 
 /**
  * POST /echo
- * Example endpoint demonstrating input validation middleware
+ * Example endpoint demonstrating input validation middleware integration
  * Echoes back the validated and sanitized message from request body
  * 
+ * Uses validateString() from middleware/validator.js for consistent
+ * string validation with automatic trim, escape, and length validation.
+ * Uses body() from express-validator for additional field validation.
+ * 
  * @param {string} req.body.message - Message to echo back (required, 1-500 chars)
+ * @param {string} [req.body.name] - Optional name field for demonstration
  * @returns {Object} JSON response with validated message
  */
 router.post('/echo',
   [
-    body('message')
+    // Use validateString from validator middleware for message field
+    // Demonstrates reusable validation chain factory pattern
+    validateString('message', { minLength: 1, maxLength: 500 }),
+    // Use body() directly for optional fields demonstration
+    body('name')
+      .optional()
       .trim()
       .escape()
-      .notEmpty()
-      .withMessage('message is required')
-      .isLength({ min: 1, max: 500 })
-      .withMessage('message must be between 1 and 500 characters'),
+      .isLength({ max: 100 })
+      .withMessage('name must be at most 100 characters'),
+    // Handle validation errors - returns 400 with error details if validation fails
     handleValidationErrors
   ],
   (req, res) => {
-    res.status(200).json({
+    const response = {
       status: 200,
       message: 'Echo successful',
       data: {
         message: req.body.message
       }
-    });
+    };
+    
+    // Include name in response if provided
+    if (req.body.name) {
+      response.data.name = req.body.name;
+    }
+    
+    res.status(200).json(response);
   }
 );
 
