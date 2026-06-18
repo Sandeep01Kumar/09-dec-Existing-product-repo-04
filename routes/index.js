@@ -32,6 +32,17 @@ router.get('/', (req, res) => {
 });
 
 /**
+ * GET /good-evening
+ * Returns a plain-text evening greeting (feature F-016).
+ * Mirrors the GET / response convention, including the trailing newline.
+ *
+ * @returns {string} 'Good evening\n' with Content-Type: text/plain
+ */
+router.get('/good-evening', (req, res) => {                  // register GET /good-evening on the shared router
+  res.status(200).type('text/plain').send('Good evening\n'); // respond 200 with a text/plain evening greeting
+});
+
+/**
  * GET /health
  * Health check endpoint for load balancers and monitoring systems
  * Skipped by rate limiter (see config/security.js rateLimitConfig.skip)
