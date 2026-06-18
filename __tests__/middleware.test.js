@@ -86,6 +86,8 @@ describe('Middleware unit tests', () => { // group all middleware-layer unit tes
       expect(res.statusCode).toBe(500); // a status-less error must default to 500
       expect(res.body.status).toBe(500); // the envelope status must be 500
       expect(res.body.message).toBe('Internal server error'); // 5xx details must be masked behind a generic message
+      expect(res.body.stack).toBeUndefined(); // production 5xx responses must not expose stack traces
+      expect(res.body.error).toBeUndefined(); // production 5xx responses must not expose raw error details
     }); // end of prod-5xx test
 
     it('delegates to next(err) when headers are already sent', () => { // assert the already-committed-response path
