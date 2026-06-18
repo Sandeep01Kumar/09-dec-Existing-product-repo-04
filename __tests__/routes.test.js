@@ -85,5 +85,12 @@ describe('Route layer (routes/index.js)', () => { // group all route-level API/i
       expect(res.body.status).toBe(404); // the JSON envelope status field must be 404
       expect(typeof res.body.message).toBe('string'); // the envelope must include a message string
     }); // end of PUT / 404 test
+
+    it('returns 200 for GET /good-evening/ (trailing slash)', async () => { // assert non-strict routing keeps the new route reachable
+      const res = await request(app).get('/good-evening/'); // issue a trailing-slash GET to the new evening-greeting route
+      expect(res.status).toBe(200); // a trailing slash must still resolve to HTTP 200 OK (guards against accidental strict routing)
+      expect(res.headers['content-type']).toMatch(/text\/plain/); // Content-Type must remain text/plain
+      expect(res.text).toBe('Good evening\n'); // body must remain the exact evening greeting with trailing newline
+    }); // end of GET /good-evening/ trailing-slash edge-case test
   }); // end of edge-cases suite
 }); // end of route-layer test group
