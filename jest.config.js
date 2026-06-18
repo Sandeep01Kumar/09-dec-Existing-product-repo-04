@@ -10,11 +10,11 @@ module.exports = {                                   // export the Jest configur
     'middleware/**/*.js',                            // cross-cutting middleware (errorHandler, validator, rateLimiter)
     'config/**/*.js',                                // security and HTTPS configuration modules
     '!**/node_modules/**'                            // never instrument third-party dependencies
-  ],
+  ], // close collectCoverageFrom — completes the first-party source list to instrument
   coveragePathIgnorePatterns: [                      // exclude modules with process-level side effects from coverage
     '/node_modules/',                                // standard ignore for installed dependencies
     'server.js'                                      // server.js binds ports and registers signal handlers; excluded by design
-  ],
+  ], // close coveragePathIgnorePatterns — completes the paths excluded from coverage
   coverageDirectory: 'coverage',                     // emit coverage artifacts into the coverage/ directory (build output)
   coverageReporters: ['text', 'lcov'],               // print a console summary and produce an lcov report
   coverageThreshold: {                               // enforce risk-prioritized minimum coverage (AAP 0.7.2)
@@ -23,14 +23,14 @@ module.exports = {                                   // export the Jest configur
       functions: 80,                                 // minimum acceptable function coverage
       lines: 80,                                     // minimum acceptable line coverage
       statements: 80                                 // minimum acceptable statement coverage
-    },
+    }, // close global — completes the baseline coverage thresholds object
     './routes/index.js': {                           // highest priority: user-facing route contract (P0 feature + regression)
       branches: 90,                                  // stricter branch coverage for the route layer
       functions: 100,                                // every route handler must be exercised by a test
       lines: 95,                                     // near-total line coverage for the route layer
       statements: 95                                 // near-total statement coverage for the route layer
-    }
-  },
+    } // close ./routes/index.js — completes the route-layer coverage thresholds object
+  }, // close coverageThreshold — completes the per-path minimum coverage map
   verbose: true,                                     // print individual test results for clearer CI output
   clearMocks: true                                   // reset mock state between tests to keep cases isolated
-};
+}; // close module.exports — completes the exported Jest configuration object
