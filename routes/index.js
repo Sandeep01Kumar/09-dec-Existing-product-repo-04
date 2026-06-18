@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
  */
 router.get('/good-evening', (req, res) => {                  // register GET /good-evening on the shared router
   res.status(200).type('text/plain').send('Good evening\n'); // respond 200 with a text/plain evening greeting
-});
+}); // end GET /good-evening route handler
 
 /**
  * GET /health

@@ -82,6 +82,8 @@ describe('Route layer (routes/index.js)', () => { // group all route-level API/i
     it('returns 404 for PUT / (method not registered)', async () => { // assert the root route rejects non-GET methods
       const res = await request(app).put('/'); // PUT to a GET-only route
       expect(res.status).toBe(404); // an unregistered method must fall through to HTTP 404
+      expect(res.body.status).toBe(404); // the JSON envelope status field must be 404
+      expect(typeof res.body.message).toBe('string'); // the envelope must include a message string
     }); // end of PUT / 404 test
   }); // end of edge-cases suite
 }); // end of route-layer test group
